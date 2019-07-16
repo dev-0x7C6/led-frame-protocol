@@ -2,14 +2,16 @@
 
 // development draft
 
+#include <externals/common/types.hpp>
+
 namespace ledframe {
 namespace proto {
 
 enum class command : u8 {
 	undef = 0x00,
 	init,
-	sync,
-	info,
+        sync,
+        info,
 	push,
 	clear,
 	done,
@@ -37,7 +39,7 @@ struct command_push_params {
 
 struct command_query_push {
 	command_query header{command::push};
-	command_push_params params{};
+        __attribute__((__packed__)) command_push_params params{};
 };
 
 
@@ -58,7 +60,7 @@ struct strip_param {
 	u8 palette : 4;
 	u8 ord : 1;
 	u8 pos : 3;
-	u16 count;
+        __attribute__((__packed__)) u16 count;
 };
 
 static_assert(sizeof(strip_param) == 3);
