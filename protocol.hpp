@@ -31,26 +31,24 @@ struct command_query {
 	const char header[3]{'L', 'F', '_'};
 	const u8 cmd;
 	const char end_header = '\0';
-};
+} __attribute__((__packed__));
 
-enum class flag_type {
-	interlaced,
-};
 
 struct push_flags {
 	enum class id {
 		interlaced,
+		interlaced_frame_even,
 	};
 
 	template <bool value = true>
-	constexpr void set(const flag_type flag) noexcept {
+	constexpr void set(const id flag) noexcept {
 		if constexpr (value)
 			flags |= 0x01 << static_cast<u8>(flag);
 		else
 			flags &= ~(0x01 << static_cast<u8>(flag));
 	}
 
-	constexpr bool test(const flag_type flag) noexcept {
+	constexpr bool test(const id flag) const noexcept {
 		return (flags >> static_cast<u8>(flag)) & 0x01;
 	}
 
@@ -66,7 +64,7 @@ struct command_push_params {
 
 struct command_query_push {
 	command_query header{command::push};
-	__attribute__((__packed__)) command_push_params params{};
+	command_push_params params{};
 };
 
 enum class position : u8 {
@@ -86,8 +84,8 @@ struct strip_param {
 	u8 palette : 4;
 	u8 ord : 1;
 	u8 pos : 3;
-	__attribute__((__packed__)) u16 count;
-};
+	u16 count;
+} __attribute__((__packed__));
 
 static_assert(sizeof(strip_param) == 3);
 
