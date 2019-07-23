@@ -40,9 +40,8 @@ struct push_flags {
 		interlaced_frame_even,
 	};
 
-	template <bool value = true>
-	constexpr void set(const id flag) noexcept {
-		if constexpr (value)
+	constexpr void set(const id flag, const bool value = true) noexcept {
+		if (value)
 			flags |= 0x01 << static_cast<u8>(flag);
 		else
 			flags &= ~(0x01 << static_cast<u8>(flag));
@@ -64,7 +63,7 @@ struct command_push_params {
 
 struct command_query_push {
 	command_query header{command::push};
-	command_push_params params{};
+	__attribute__((__packed__)) command_push_params params{};
 };
 
 enum class position : u8 {
